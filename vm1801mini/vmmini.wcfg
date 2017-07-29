@@ -100,6 +100,10 @@
       <obj_property name="UseCustomSignalColor">true</obj_property>
       <obj_property name="CustomSignalColor">#ff00ff</obj_property>
    </wvobject>
+   <wvobject fp_name="/testbench/uut/mx_stb" type="array" db_ref_id="1">
+      <obj_property name="ElementShortName">mx_stb[3:0]</obj_property>
+      <obj_property name="ObjectShortName">mx_stb[3:0]</obj_property>
+   </wvobject>
    <wvobject fp_name="/testbench/uut/ack" type="array" db_ref_id="1">
       <obj_property name="ElementShortName">ack[1:0]</obj_property>
       <obj_property name="ObjectShortName">ack[1:0]</obj_property>
@@ -134,10 +138,6 @@
       <obj_property name="ObjectShortName">wbi_stb_o</obj_property>
       <obj_property name="UseCustomSignalColor">true</obj_property>
       <obj_property name="CustomSignalColor">#ffa500</obj_property>
-   </wvobject>
-   <wvobject fp_name="/testbench/uut/mx_stb" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">mx_stb[3:0]</obj_property>
-      <obj_property name="ObjectShortName">mx_stb[3:0]</obj_property>
    </wvobject>
    <wvobject fp_name="/testbench/uut/wb_sel" type="array" db_ref_id="1">
       <obj_property name="ElementShortName">wb_sel[1:0]</obj_property>
