@@ -10,7 +10,10 @@
          </top_modules>
       </db_ref>
    </db_ref_list>
-   <WVObjectSize size="39" />
+   <WVObjectSize size="35" />
+   <wave_markers>
+      <marker time="10540500000" label="" />
+   </wave_markers>
    <wvobject fp_name="/testbench/uut/reset" type="logic" db_ref_id="1">
       <obj_property name="ElementShortName">reset</obj_property>
       <obj_property name="ObjectShortName">reset</obj_property>
@@ -84,14 +87,6 @@
       <obj_property name="UseCustomSignalColor">true</obj_property>
       <obj_property name="CustomSignalColor">#ff00ff</obj_property>
    </wvobject>
-   <wvobject fp_name="/testbench/uut/RAM_F/we_b" type="logic" db_ref_id="1">
-      <obj_property name="DisplayName">label</obj_property>
-      <obj_property name="ElementShortName">we_b</obj_property>
-      <obj_property name="ObjectShortName">we_b</obj_property>
-      <obj_property name="label">RAM.wr</obj_property>
-      <obj_property name="UseCustomSignalColor">true</obj_property>
-      <obj_property name="CustomSignalColor">#ff00ff</obj_property>
-   </wvobject>
    <wvobject fp_name="/testbench/uut/WRV" type="array" db_ref_id="1">
       <obj_property name="DisplayName">label</obj_property>
       <obj_property name="ElementShortName">WRV[7:0]</obj_property>
@@ -116,11 +111,6 @@
       <obj_property name="ElementShortName">wb_stb</obj_property>
       <obj_property name="ObjectShortName">wb_stb</obj_property>
    </wvobject>
-   <wvobject fp_name="/testbench/uut/RAM_F/q_a" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">q_a[15:0]</obj_property>
-      <obj_property name="ObjectShortName">q_a[15:0]</obj_property>
-      <obj_property name="Radix">HEXRADIX</obj_property>
-   </wvobject>
    <wvobject fp_name="/testbench/uut/wb_ack_cpu" type="logic" db_ref_id="1">
       <obj_property name="ElementShortName">wb_ack_cpu</obj_property>
       <obj_property name="ObjectShortName">wb_ack_cpu</obj_property>
@@ -144,19 +134,29 @@
       <obj_property name="ObjectShortName">wb_sel[1:0]</obj_property>
    </wvobject>
    <wvobject fp_name="/testbench/uut/mx_dat" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">mx_dat[2:0,15:0]</obj_property>
-      <obj_property name="ObjectShortName">mx_dat[2:0,15:0]</obj_property>
+      <obj_property name="ElementShortName">mx_dat[3:0,15:0]</obj_property>
+      <obj_property name="ObjectShortName">mx_dat[3:0,15:0]</obj_property>
       <obj_property name="Radix">HEXRADIX</obj_property>
-   </wvobject>
-   <wvobject fp_name="/testbench/uut/RAM_F/addr_a" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">addr_a[9:0]</obj_property>
-      <obj_property name="ObjectShortName">addr_a[9:0]</obj_property>
-      <obj_property name="Radix">HEXRADIX</obj_property>
-   </wvobject>
-   <wvobject fp_name="/testbench/uut/RAM_F/q_a" type="array" db_ref_id="1">
-      <obj_property name="ElementShortName">q_a[15:0]</obj_property>
-      <obj_property name="ObjectShortName">q_a[15:0]</obj_property>
-      <obj_property name="Radix">HEXRADIX</obj_property>
+      <wvobject fp_name="/testbench/uut/mx_dat[3]" type="array" db_ref_id="1">
+         <obj_property name="ElementShortName">[3,15:0]</obj_property>
+         <obj_property name="ObjectShortName">mx_dat[3,15:0]</obj_property>
+         <obj_property name="Radix">HEXRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/testbench/uut/mx_dat[2]" type="array" db_ref_id="1">
+         <obj_property name="ElementShortName">[2,15:0]</obj_property>
+         <obj_property name="ObjectShortName">mx_dat[2,15:0]</obj_property>
+         <obj_property name="Radix">HEXRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/testbench/uut/mx_dat[1]" type="array" db_ref_id="1">
+         <obj_property name="ElementShortName">[1,15:0]</obj_property>
+         <obj_property name="ObjectShortName">mx_dat[1,15:0]</obj_property>
+         <obj_property name="Radix">HEXRADIX</obj_property>
+      </wvobject>
+      <wvobject fp_name="/testbench/uut/mx_dat[0]" type="array" db_ref_id="1">
+         <obj_property name="ElementShortName">[0,15:0]</obj_property>
+         <obj_property name="ObjectShortName">mx_dat[0,15:0]</obj_property>
+         <obj_property name="Radix">HEXRADIX</obj_property>
+      </wvobject>
    </wvobject>
    <wvobject fp_name="/testbench/uut/vga/PixClock" type="logic" db_ref_id="1">
       <obj_property name="ElementShortName">PixClock</obj_property>
