@@ -101,15 +101,56 @@ vm1_wb cpu(
 
 // Map mem and IO
 wire [3:0]	mx_stb;							
-assign mx_stb[0]	= wb_stb & wb_cyc & (wb_adr[15:4] == (16'o177700 >> 4)); // FFC
-assign mx_stb[1]	= wb_stb & wb_cyc & (wb_adr[15:14] == 2'o0);
-assign mx_stb[2]	= wb_stb & wb_cyc & (wb_adr[15:3] == (16'o177560 >> 3)); // FF7
+assign mx_stb[0]	= wb_stb & wb_cyc & (wb_adr[15:4] == (16'o177700 >> 4)); // FFCx
+assign mx_stb[1]	= wb_stb & wb_cyc & (wb_adr[15:14] == 2'b00);
+assign mx_stb[2]	= wb_stb & wb_cyc & (wb_adr[15:3] == (16'o177560 >> 3)); // FF7x
 assign mx_stb[3]	= wb_stb & wb_cyc & (wb_adr[15:14] == 2'b11); // C000-FFFF
 
-wire [15:0] ram_data = wb_adr[11]? mx_dat[2] : mx_dat[1];
+/*
+ 10..0 - low bit address (in BRAM) 3FF..0 - 2048 (2K)
+ 
+ BFFF - LAST ADDR - [1011.1][111.1111.1111]
+ 07FF..0000  - b00 - 2K 
+ 0FFF..0800  - b01 - 4K
+ -----------------------
+ 17FF..1000  - b02 - 6K
+ 1FFF..1800  - b03 - 8K
+ -----------------------
+ 27FF..2000  - b04 - 10K
+ 2FFF..2800  - b05 - 12K
+ -----------------------
+ 37FF..3000  - b06 - 14K
+ 3FFF..3800  - b07 - 16K
+ -----------------------
+ 47FF..4000  - b08 - 18K
+ 4FFF..4800  - b09 - 20K
+ -----------------------
+ 57FF..5000  - b10 - 22K
+ 5FFF..5800  - b11 - 24K
+ -----------------------
+ 67FF..6000  - b12 - 26K
+ 6FFF..6800  - b13 - 28K
+ -----------------------
+ 77FF..7000  - b14 - 30K
+ 7FFF..7800  - b15 - 32K
+ -----------------------
+ 87FF..8000  - b16 - 34K
+ 8FFF..8800  - b17 - 36K
+ -----------------------
+ 97FF..9000  - b16 - 38K
+ 9FFF..9800  - b17 - 40K
+ -----------------------
+ A7FF..A000  - b18 - 42K
+ AFFF..A800  - b19 - 44K
+ -----------------------
+ B7FF..B000  - b20 - 46K
+ BFFF..B800  - b21 - 48K
+*/
 
-assign wb_mux		= (mx_stb[0] ? mx_dat[0] : 16'o000000)
-						| (mx_stb[1] ? ram_data  : 16'o000000);
+wire [15:0] ram_data;// = wb_adr[11]? mx_dat[2] : mx_dat[1];
+
+assign wb_mux		= (mx_stb[0] ? mx_dat[0] : 16'd0)
+						| (mx_stb[1] ? ram_data  : 16'd0);
 
 assign wb_ack_mem = wb_cyc & wb_stb & (ack[1] | wb_we);
 reg [1:0]ack;
@@ -167,9 +208,12 @@ VIDEORAM VRAM7(
  .clkb(mclkp), .data_b(wb_out), .addr_b(wb_adr[10:1]), .sel(wb_sel), .we_b(WRV[7]), .q_b(BUSV[7])
 );
 
-wire [15:0] bus_do_II [1:0];
-wire [15:0] bus_do;
-wire [15:0] bus_di;
+RAM RAMALL(.di(wb_out),.addr(wb_adr),.Q(ram_data),.we(mx_stb[1] & wb_we),.sel(wb_sel),.clk(mclkp));
+
+//wire [15:0] bus_do_II [1:0];
+//wire [15:0] bus_do;
+//wire [15:0] bus_di;
+/*
 RAM16 RAM_0000(
   .data_a(wb_out), 
   .addr_a(wb_adr[10:1]),
@@ -193,17 +237,8 @@ RAM16_1 RAM_0800(
   .q_b(bus_do_II[1]),
   .we_b(1'b0), 
   .clk(mclkp)
-);
-/*
-RAM RAM_F(
-  .DI(wb_out), 
-  .ADDR(wb_adr[10:1]),
-  .DO(mx_dat[1]),
-  .WR(wb_we),
-  .SEL(wb_sel),
-  .CLK(mclkp)
-);
-*/
+);*/
+
 assign dclo = dclo_out;
 assign aclo = aclo_out; 
 reg [1:0]RST;
@@ -242,6 +277,85 @@ begin
 				aclo_out <= 1'b0;
 	end
 end
+
+endmodule
+
+module RAM(
+  input [15:0]di,
+  input [15:0]addr,
+  input we, clk,
+  input [1:0]sel,
+  output[15:0]Q
+);
+/*
+ 10..0 - low bit address (in BRAM) 3FF..0 - 2048 (2K)
+ 
+ BFFF - LAST ADDR - [1011.1][111.1111.1111]
+ 07FF..0000  - b00 - 2K 
+ 0FFF..0800  - b01 - 4K
+ -----------------------
+ 17FF..1000  - b02 - 6K
+ 1FFF..1800  - b03 - 8K
+ -----------------------
+ 27FF..2000  - b04 - 10K
+ 2FFF..2800  - b05 - 12K
+ -----------------------
+ 37FF..3000  - b06 - 14K
+ 3FFF..3800  - b07 - 16K
+ -----------------------
+ 47FF..4000  - b08 - 18K
+ 4FFF..4800  - b09 - 20K
+ -----------------------
+ 57FF..5000  - b10 - 22K
+ 5FFF..5800  - b11 - 24K
+ -----------------------
+ 67FF..6000  - b12 - 26K
+ 6FFF..6800  - b13 - 28K
+ -----------------------
+ 77FF..7000  - b14 - 30K
+ 7FFF..7800  - b15 - 32K
+ -----------------------
+ 87FF..8000  - b16 - 34K
+ 8FFF..8800  - b17 - 36K
+ -----------------------
+ 97FF..9000  - b16 - 38K
+ 9FFF..9800  - b17 - 40K
+ -----------------------
+ A7FF..A000  - b18 - 42K
+ AFFF..A800  - b19 - 44K
+ -----------------------
+ B7FF..B000  - b20 - 46K
+ BFFF..B800  - b21 - 48K
+*/
+
+wire [4:0]CS = addr[15:11];
+wire [15:0]data[21:0];
+wire [21:0]wr = {21'd0, we} << CS;
+
+assign Q = data[CS];
+
+RAM16 RAM_00(.data_a(di),.addr_a(addr[10:1]),.q_a(data[0]),.we_a(wr[0]),.sel_a(sel),.data_b(16'hFFFF),.addr_b(10'h3FF),.we_b(1'b0),.clk(clk));
+RAM16_1 RAM_01(.data_a(di),.addr_a(addr[10:1]),.q_a(data[1]),.we_a(wr[1]),.sel_a(sel),.data_b(16'hFFFF),.addr_b(10'h3FF),.we_b(1'b0),.clk(clk));
+RAM16 RAM_02(.data_a(di),.addr_a(addr[10:1]),.q_a(data[2]),.we_a(wr[2]),.sel_a(sel),.data_b(16'hFFFF),.addr_b(10'h3FF),.we_b(1'b0),.clk(clk));
+RAM16 RAM_03(.data_a(di),.addr_a(addr[10:1]),.q_a(data[3]),.we_a(wr[3]),.sel_a(sel),.data_b(16'hFFFF),.addr_b(10'h3FF),.we_b(1'b0),.clk(clk));
+RAM16 RAM_04(.data_a(di),.addr_a(addr[10:1]),.q_a(data[4]),.we_a(wr[4]),.sel_a(sel),.data_b(16'hFFFF),.addr_b(10'h3FF),.we_b(1'b0),.clk(clk));
+RAM16 RAM_05(.data_a(di),.addr_a(addr[10:1]),.q_a(data[5]),.we_a(wr[5]),.sel_a(sel),.data_b(16'hFFFF),.addr_b(10'h3FF),.we_b(1'b0),.clk(clk));
+RAM16 RAM_06(.data_a(di),.addr_a(addr[10:1]),.q_a(data[6]),.we_a(wr[6]),.sel_a(sel),.data_b(16'hFFFF),.addr_b(10'h3FF),.we_b(1'b0),.clk(clk));
+RAM16 RAM_07(.data_a(di),.addr_a(addr[10:1]),.q_a(data[7]),.we_a(wr[7]),.sel_a(sel),.data_b(16'hFFFF),.addr_b(10'h3FF),.we_b(1'b0),.clk(clk));
+RAM16 RAM_08(.data_a(di),.addr_a(addr[10:1]),.q_a(data[8]),.we_a(wr[8]),.sel_a(sel),.data_b(16'hFFFF),.addr_b(10'h3FF),.we_b(1'b0),.clk(clk));
+RAM16 RAM_09(.data_a(di),.addr_a(addr[10:1]),.q_a(data[9]),.we_a(wr[9]),.sel_a(sel),.data_b(16'hFFFF),.addr_b(10'h3FF),.we_b(1'b0),.clk(clk));
+RAM16 RAM_10(.data_a(di),.addr_a(addr[10:1]),.q_a(data[10]),.we_a(wr[10]),.sel_a(sel),.data_b(16'hFFFF),.addr_b(10'h3FF),.we_b(1'b0),.clk(clk));
+RAM16 RAM_11(.data_a(di),.addr_a(addr[10:1]),.q_a(data[11]),.we_a(wr[11]),.sel_a(sel),.data_b(16'hFFFF),.addr_b(10'h3FF),.we_b(1'b0),.clk(clk));
+RAM16 RAM_12(.data_a(di),.addr_a(addr[10:1]),.q_a(data[12]),.we_a(wr[12]),.sel_a(sel),.data_b(16'hFFFF),.addr_b(10'h3FF),.we_b(1'b0),.clk(clk));
+RAM16 RAM_13(.data_a(di),.addr_a(addr[10:1]),.q_a(data[13]),.we_a(wr[13]),.sel_a(sel),.data_b(16'hFFFF),.addr_b(10'h3FF),.we_b(1'b0),.clk(clk));
+RAM16 RAM_14(.data_a(di),.addr_a(addr[10:1]),.q_a(data[14]),.we_a(wr[14]),.sel_a(sel),.data_b(16'hFFFF),.addr_b(10'h3FF),.we_b(1'b0),.clk(clk));
+RAM16 RAM_15(.data_a(di),.addr_a(addr[10:1]),.q_a(data[15]),.we_a(wr[15]),.sel_a(sel),.data_b(16'hFFFF),.addr_b(10'h3FF),.we_b(1'b0),.clk(clk));
+RAM16 RAM_16(.data_a(di),.addr_a(addr[10:1]),.q_a(data[16]),.we_a(wr[16]),.sel_a(sel),.data_b(16'hFFFF),.addr_b(10'h3FF),.we_b(1'b0),.clk(clk));
+RAM16 RAM_17(.data_a(di),.addr_a(addr[10:1]),.q_a(data[17]),.we_a(wr[17]),.sel_a(sel),.data_b(16'hFFFF),.addr_b(10'h3FF),.we_b(1'b0),.clk(clk));
+RAM16 RAM_18(.data_a(di),.addr_a(addr[10:1]),.q_a(data[18]),.we_a(wr[18]),.sel_a(sel),.data_b(16'hFFFF),.addr_b(10'h3FF),.we_b(1'b0),.clk(clk));
+RAM16 RAM_19(.data_a(di),.addr_a(addr[10:1]),.q_a(data[19]),.we_a(wr[19]),.sel_a(sel),.data_b(16'hFFFF),.addr_b(10'h3FF),.we_b(1'b0),.clk(clk));
+RAM16 RAM_20(.data_a(di),.addr_a(addr[10:1]),.q_a(data[20]),.we_a(wr[20]),.sel_a(sel),.data_b(16'hFFFF),.addr_b(10'h3FF),.we_b(1'b0),.clk(clk));
+RAM16 RAM_21(.data_a(di),.addr_a(addr[10:1]),.q_a(data[21]),.we_a(wr[21]),.sel_a(sel),.data_b(16'hFFFF),.addr_b(10'h3FF),.we_b(1'b0),.clk(clk));
 
 endmodule
 
@@ -291,13 +405,20 @@ wire [1:0] WEA = we_b? sel_a : 2'b00;
       .INITP_07(256'h0000000000000000000000000000000000000000000000000000000000000000),
       // INIT_00 to INIT_3F: Initial memory contents.
 
-
+/* sluju soviet union
 .INIT_00(256'hECEE_EAF1_F2E5_E2EE_D120_F3E6_F3EB_D120_3A31_CCC2_3130_3831_0026_0977_00A8_15C6),
 .INIT_01(256'h08F7_0304_0000_25C4_FF00_45C4_9544_1126_10E6_FFFC_0077_0021_20F3_E7FE_EED1_20F3),
 .INIT_02(256'h65F7_002A_1DC0_1066_1026_0085_1583_1584_0001_65C5_0302_0001_35C5_FFEC_0077_0014),
 .INIT_03(256'h2101_0040_65C0_9448_0008_65C4_1101_0800_65C4_6104_6104_6104_0020_E5C4_0024_0001),
 .INIT_04(256'h2020_2020_2020_2020_2020_2020_2020_2020_2020_2020_2020_C000_0083_1580_1581_02FB),
 .INIT_05(256'h0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0020_2020_2020_2020),
+*/
+
+.INIT_00(256'hECEE_EAF1_F2E5_E2EE_D120_F3E6_F3EB_D120_3A31_CCC2_3130_3831_0026_0977_008E_15C6),
+.INIT_01(256'h0077_0010_0977_0304_0000_25C4_FF00_45C4_9544_FFFC_0077_0021_20F3_E7FE_EED1_20F3),
+.INIT_02(256'h6104_6104_0020_E5C4_0020_0001_65F7_0026_1DC0_0085_0001_65C5_0302_0001_35C5_FFEC),
+.INIT_03(256'h0000_0000_0000_C000_0085_02FB_2101_0040_65C0_9448_0008_65C4_1101_0800_65C4_6104),
+.INIT_04(256'h0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000),
 
 //.INIT_00(256'h0040_65C0_9448_0008_65C3_1043_01FF_E5C0_0040_15C2_0004_15C4_0800_15C1_C1FF_15C0),
 //.INIT_01(256'h0000_0000_0000_0000_FFFC_0077_02EC_0001_E5C4_0200_65C0_02F3_0001_E5C2_02FB_20C1),
@@ -309,7 +430,7 @@ wire [1:0] WEA = we_b? sel_a : 2'b00;
 //      .INIT_02(256'h0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_00f8_6c66_6666_6cf8_00f0_6060),
 //      .INIT_03(256'h0000000000000000000000000000000000000000000000000000000000000000),
 //      .INIT_04(256'h0000000000000000000000000000000000000000000000000000000000000000),
-//      .INIT_05(256'h0000000000000000000000000000000000000000000000000000000000000000),
+      .INIT_05(256'h0000000000000000000000000000000000000000000000000000000000000000),
       .INIT_06(256'h0000000000000000000000000000000000000000000000000000000000000000),
       .INIT_07(256'h0000000000000000000000000000000000000000000000000000000000000000),
       .INIT_08(256'h0000000000000000000000000000000000000000000000000000000000000000),
