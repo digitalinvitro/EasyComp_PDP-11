@@ -22,24 +22,24 @@
 `define 	DE0_DCLO_WIDTH_CLK			15
 `define	DE0_ACLO_DELAY_CLK			7
 
-module  mini(
- input clk,
- input reset,
- //input uart_rx,
- //output uart_tx, 
+ module  mini(
+  input clk,
+  input reset,
+  input uart_rx,
+  output uart_tx, 
  //output EXTM,
- output [4:0]Ro, 
- output [4:0]Bo,
- output [5:0]Go,
- output HS, VS,
- output reg [2:0]led = 3'd0
+  output [4:0]Ro, 
+  output [4:0]Bo,
+  output [5:0]Go,
+  output HS, VS,
+  output reg [2:0]led = 3'd0
 );
 localparam DCLO_COUNTER_WIDTH = 4;
 localparam ACLO_COUNTER_WIDTH = 3;
 
 reg [DCLO_COUNTER_WIDTH-1:0] dclo_cnt;
 reg [ACLO_COUNTER_WIDTH-1:0] aclo_cnt;
-reg [1:0]rreset;
+//reg [1:0]rreset;
 reg aclo_out, dclo_out;
 
 
@@ -57,7 +57,7 @@ wire [15:0] wb_out;     					// master data out bus
 wire [15:0] wb_mux;							//	master data in bus
 wire [1:0]  wb_sel;						   // byte sector
 wire [3:1]	vm_irq = 3'b000;							//
-wire wb_cyc, wb_stb, wb_acki, wb_ack_cpu, wb_ack_mem;
+wire wb_cyc, wb_stb, wb_acki, wb_ack_cpu, wb_ack_mem, wb_ack_FF7x;
 
 vm1_wb cpu(
  .vm_clk_p(mclkp),
@@ -103,8 +103,6 @@ vm1_wb cpu(
 wire [3:0]	mx_stb;
 wire A_FFCx = wb_adr[15:4] == (16'o177700 >> 4);
 wire A_FF7x = wb_adr[15:3] == (16'o177560 >> 3);
-assign mx_stb[0]	= wb_stb & wb_cyc & A_FFCx; // FFCx
-assign mx_stb[2]	= wb_stb & wb_cyc & A_FF7x; // FF7x
 
 /*++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
  VP7 BFFF..B800  - b23 - 48K  (10|11.1)
@@ -115,11 +113,15 @@ assign mx_stb[2]	= wb_stb & wb_cyc & A_FF7x; // FF7x
  VP4 E7FF..E000  - b28 - 58K  (11|10.0)
  VP5 EFFF..E800  - b29 - 60K  (11|10.1)
  VP6 F7FF..F000  - b30 - 62K  (11|11.0)
+     FFFF..F800  -            (11|11.1)
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++*/
-wire A_VP = (wb_adr[15:14] == 2'b10) | (wb_adr[15:14] == 5'b11);
+wire A_VP = (wb_adr[15:11] == 5'b10_111) | ((wb_adr[15:14] == 2'b11) & !(&wb_adr[15:11]));
  
-assign mx_stb[3]	= wb_stb & wb_cyc & A_VP; // F7FF - b800 
+assign mx_stb[0]	= wb_stb & wb_cyc & A_FFCx; // FFCx
+assign mx_stb[2]	= wb_stb & wb_cyc & A_FF7x; // FF7x
+
 assign mx_stb[1]	= wb_stb & wb_cyc & (!(A_FFCx | A_FF7x | A_VP)); // B7FF - 0000
+assign mx_stb[3]	= wb_stb & wb_cyc & A_VP; // F7FF - b800 
 
 /*
  10..0 - low bit address (in BRAM) 3FF..0 - 2048 (2K)
@@ -173,12 +175,24 @@ assign mx_stb[1]	= wb_stb & wb_cyc & (!(A_FFCx | A_FF7x | A_VP)); // B7FF - 0000
  FFFF..F800  - b31 - 64K  (1111.1)
 */
 
+//================================================================================
+//   UART    write to FF70 - send data port, read from FF70 - get status TX
+//================================================================================
+wire TX_busy;
+serial_tx TX(.reset(!RST[1]), .clk(mclkp), .sbyte(wb_out[7:0]), .send(mx_stb[2] & wb_we), .tx(uart_tx), .busy(TX_busy));
+
+wire RX_ready;
+wire [7:0]RX_data;
+serial_rx RX(.reset(!RST[1]), .clk(mclkp), .rx(uart_rx), .rxread(wb_ack_FF7x), .rxbyte(RX_data), .ready(RX_ready));
+
 wire [15:0] ram_data;// = wb_adr[11]? mx_dat[2] : mx_dat[1];
 
 assign wb_mux		= (mx_stb[0] ? mx_dat[0] : 16'd0)
-						| (mx_stb[1] ? ram_data  : 16'd0);
+						| (mx_stb[1] ? ram_data  : 16'd0)
+						| (mx_stb[2] ? {TX_busy, RX_ready, 6'd0, RX_data}  : 16'd0);
 
 assign wb_ack_mem = wb_cyc & wb_stb & (ack[1] | wb_we);
+assign wb_ack_FF7x = wb_cyc & wb_stb & ack[1] & A_FF7x;
 reg [1:0]ack;
 always@(posedge mclkp) 
 begin
@@ -247,15 +261,13 @@ begin
 	RST[0] <= !reset;
 	RST[1] <= RST[0];
 	
-	if (RST[1]) // reset up
-	begin
+	if (RST[1]) begin // reset up
 		dclo_cnt  	<= 0;
 		aclo_cnt  	<= 0;
 		aclo_out		<= 1'b1;
 		dclo_out		<= 1'b1;
 	end
-	else
-	begin
+	else	begin
 		//
 		// Count the DCLO pulse
 		//

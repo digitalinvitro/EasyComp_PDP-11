@@ -27,10 +27,10 @@ module testbench;
 	// Inputs
 	reg clk;
 	reg reset;
-//	reg uart_rx; 
+	reg rx; 
 
 	// Outputs
-//	wire uart_tx;
+	wire uart_tx;
 //	wire EXTM;
 	wire [4:0] Ro;
 	wire [4:0] Bo;
@@ -43,8 +43,8 @@ module testbench;
 	mini uut (
 		.clk(clk), 
 		.reset(reset), 
-//		.uart_rx(uart_rx), 
-//		.uart_tx(uart_tx), 
+		.uart_rx(rx), 
+		.uart_tx(uart_tx), 
 //		.EXTM(EXTM), 
 		.Ro(Ro), 
 		.Bo(Bo), 
@@ -77,6 +77,19 @@ module testbench;
 		// Add stimulus here
 
 	end
+
+        initial begin
+           rx = 1'b1;
+                #25000 rx <= 1'b1;
+                #25000 rx <= 1'b0;
+                #25000 rx <= 1'b1;
+                #25000 rx <= 1'b0;
+                #25000 rx <= 1'b1;
+                #25000 rx <= 1'b1;
+                #25000 rx <= 1'b0;
+                #20000 rx <= 1'b0;
+                #25000 rx <= 1'b1;
+        end
 
 endmodule
 

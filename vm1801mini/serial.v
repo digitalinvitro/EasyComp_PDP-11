@@ -1,84 +1,3 @@
-/*
-// последовательный приемник
-// 38400бит/сек
-// 8бит, без четности
-module serial_rx(
-    input wire reset,
-    input wire clk,
-    input wire rx,
-    output reg [7:0]rxbyte,
-    output ready
-    );
-
-//скорость приема и передачи определяется этой константой
-//она рассчитана из исх. тактовой частоты 185,142857 Mhz и желаемой скорости 38400
-//как (162000000)/38400 ~ 4219
-//как (152000000)/38400 ~ 3958 
-//как (153600000)/38400 = 4000 
-//как (156000000)/38400 ~ 4063
-//как (157714286)/38400 ~ 4107
-//как (185142857)/38400 ~ 4821
-//как (192000000)/38400 = 5000
-// 920000000/38400 ~ 2396 
-parameter RCONST = 2395; 
-
-reg [3:0]num_bits = 9; //счетчик принятых бит
-reg [7:0]shift_reg; //сдвиговый регистр приемника
-reg [11:0]cnt;
-reg bit9 = 1'b0;
-reg rxrd = 1'b0;
-
-//assign rx_byte = shift_reg;
-
-//счетчик длительности принимаемого бита
-always @(posedge clk or negedge reset)
-begin
-    if(!reset)
-        cnt <= 0;
-    else
-    begin
-        if(cnt == RCONST || num_bits==9)
-            cnt <= 0;
-        else
-            cnt <= cnt + 1'b1;
-    end
-end
-
-assign ready = rxrd & !bit9;
-
-//приемник
-always @(posedge clk or negedge reset)
-begin
-    if(!reset) begin
-        num_bits <= 9;
-        shift_reg <= 0;
-                  bit9 <= 1'b0;
-                  rxrd <= 1'b0;
-    end
-    else begin
-        //прием начинается когда RX падает в ноль
-        if(num_bits==9 && rx==1'b0) begin
-            num_bits <= 0;
-        end    
-        else if(cnt == RCONST) begin
-            num_bits <= num_bits + 1'b1;
-                  end
-        
-        //фиксация принятого бита где-то посередине
-        if(cnt == RCONST/2) shift_reg <= {rx,shift_reg[7:1]};
-
-        bit9 <= (bit9)? !(num_bits==9) : (num_bits == 8);
-        rxrd <= bit9;
-    end
-end
-
-//сигнал готовности принятого байта        
-always@(posedge clk) begin
-      rxbyte <= shift_reg;
-end    
-endmodule
-*/
-
 // последовательный приемник
 // 38400бит/сек
 // 8бит, без четности
@@ -92,7 +11,6 @@ module serial_rx(
 );
 
 //скорость приема и передачи определяется этой константой
-//она рассчитана из исх. тактовой частоты 185,142857 Mhz и желаемой скорости 38400
 //как (162000000)/38400 ~ 4219
 //как (152000000)/38400 ~ 3958 
 //как (153600000)/38400 = 4000 
@@ -100,8 +18,9 @@ module serial_rx(
 //как (157714286)/38400 ~ 4107
 //как (185142857)/38400 ~ 4821
 //как (192000000)/38400 = 5000
-// 920000000/38400 ~ 2396 
-parameter RCONST = 2396; 
+// 92000000/38400 ~ 2396 
+// 50000000/38400 ~ 1302
+parameter RCONST = 1302; 
 
 reg [3:0]num_bits = 10;     //счетчик принятых бит
 reg [7:0]shift_reg = 0;    //сдвиговый регистр приемника
@@ -151,7 +70,7 @@ module serial_tx(
     output reg busy = 1'b0
     );
 
-parameter RCONST = 2396; 
+parameter RCONST = 1302; 
 
 //передатчик
 reg [8:0]send_reg = 9'b1_1111_1111;
