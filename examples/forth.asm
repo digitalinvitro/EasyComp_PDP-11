@@ -10,26 +10,140 @@
 F4CORE:
         .word   IWORD_, hello, COUNT_, TYPE_
 
-        .word   IWORD_, 0, IWORD_, 18., dump_             ; -- start count
+;        .word   IWORD_, 0, IWORD_, 18., dump_             ; -- start count
 ; transimt T to UART
         .word   IWORD_, 'T', IWORD_, 0xFF70, STORE_
-        .word   IWORD_, OK, COUNT_, TYPE_
+work:
+; приглашение к вводу "глубина стека:F>"
+        .word   DEEP_, CR_, HEX_, IWORD_, OK, COUNT_, TYPE_
+        .word   HIB_, FIB_, STORE_
 ; input from uart
 getrx:
         .word   IWORD_, 0xFF70, IWORD_, 0xBFFF
 getrx_char:
         .word   OVER_, FETCH_, OVER_, BIC_              ; * -- FF70 BFFF [FF70]&4000
         .word   BRZ_, getrx_char                        ; * -- FF70 BFFF  
-        .word   OVER_, FETCH_, IWORD_, 0xFF00, BIC_     
-        .word   DUP_, EMIT_
-;        .word   IWORD_, 8., EQU_
-        .word   IWORD_, 13., EQU_, BRZ_, getrx_char
+        .word   OVER_, FETCH_, IWORD_, 0xFF00, BIC_     ; * -- FF70 BFFF [FF70]&00FF
 
+        .word   DUP_, EMIT_
+        .word   DUP_, IWORD_, 8., EQU_, BRZ_, cmp_next
+; --- Back space
+        .word   DROP_, FIB_, FETCH_, DEC_               ; FF70 BFFF char -- FF70 BFFF *fib-1
+        .word   IWORD_, 32., OVER_                      ; * -- FF70 BFFF *fib-1 0x32 *fib-1
+        .word   CSTORE_                                 ; * -- FF70 BFFF *fib-1
+        .word   FIB_                                    ; * -- FF70 BFFF *fib-1 fib
+        .word   STORE_, BR_, getrx_char                 ; * -- FF70 BFFF 
+cmp_next:
+        .word   FIB_, FETCH_, OVER_, OVER_              ; * -- FF70 BFFF char *fib char *fib
+        .word   CSTORE_                                 ; * -- FF70 BFFF char *fib
+        .word   INC_, FIB_, STORE_                      ; * -- FF70 BFFF char 
+        .word   IWORD_, 13., EQU_, BRZ_, getrx_char     ; * -- FF70 BFFF 
+        .word   DROP2_                                  ; * --
+        .word   HIB_, PAD_, STORE_                      ; * --
+
+; debug print input string
+;        .word   HIB_, IWORD_, 40, TYPE_, CR_
+; seek in dictionary
+seek_dictionary:
+        .word   PAD_, FETCH_, HERE_, DEC_, BR_, cmpstr  ;  -- *pad+1 *here-1 
+next_cmpchar:
         .word   DROP2_
-        .word   IWORD_, OK, COUNT_, TYPE_
+        .word   DEC_, SWAP_, INC_, SWAP_                ; *pad *here -- *pad+1 *here-1
+cmpstr:
+        .word   OVER_, CFETCH_                          ; * -- *pad+1 *here-1 pad_ch 
+        .word   OVER_, CFETCH_                          ; * -- *pad+1 *here-1 pad_ch here-1_ch
+
+        .word   DUP2_                                   ; * -- *pad+1 *here-1 pad_ch here-1_ch pad_ch here-1_ch
+        .word   EQU_, BRNZ_, next_cmpchar               ; * -- *pad+1 *here-1 pad_ch here-1_ch
+;
+; символ словарного слова не равен символу из буфера ввода
+;
+        .word   BRNZ_, cmp_fault                        ; *pad+1 *here-1 pad_ch here-1_ch -- *pad+1 *here-1 pad_ch 
+; обнаружен конечный символ словарного слова - null
+;
+        .word   DUP_, IWORD_, 13., EQU_                 ; * -- *pad+1 *here-1 pad_ch pad_ch==CR
+        .word   SWAP_, IWORD_, 32., EQU_                ; * -- *pad+1 *here-1 pad_ch==CR pad_ch==SPACE
+        .word   OR_, BRZ_, cmp_fault0                   ; * -- *pad+1 *here-1 
+;
+; поиск успешен
+        .word   DUP_, IWORD_, 0xFFFE, BIC_, SUB_        ; * -- *pad+1 *here-1 odd(*here-1)
+        .word   IWORD_, 2, SUB_, FETCH_                 ; * -- *pad+1 exec_addr
+        .word   SWAP_                                   ; * -- exec_addr *pad
+;
+; пропустить в PAD все подряд идущие пробелы 
+;
+        .word   IWORD_, ' ', SWAP_, SKIPC_              ; * -- exec_addr *new_pad
+        .word   PAD_, STORE_                            ; * -- exec_addr 
+; debug parameter for execute
+;        .word   IWORD_, find, COUNT_, TYPE_
+        .word   EXEC_
+seek_dic_next:
+        .word   PAD_, FETCH_, CFETCH_, IWORD_, 13., EQU_ ; если не возврат каретки продолжить поиск в словаре после выполнения
+        .word   BRNZ_, work
+        .word   BR_, seek_dictionary
+
+; ошибка поиска, указатель поиска на каком то из символов наименования слова
+;   ситуация когда введенное слово не совпало по символьно с словом в словаре, а до конца слова поиск не дошел
+;  - поиск надо продолжить
+cmp_fault: 
+        .word   DROP_
+;        .word   CR_, EMIT_                              ; *pad+1 *here-1 pad_ch -- *pad+1 *here-1 
+seek_0:
+        .word   DEC_, DUP_, CFETCH_, BRNZ_, seek_0      ; * -- pad+1 here
+; ошибка поиска, указатель поиска на терминирующем символе 
+;   ситуация когда введенное слово совпадает частично, но при этом длинее сравниваемого слова в словаре
+;   - поиск необходимо продолжить
+cmp_fault0:
+;        .word   IWORD_, unfind, COUNT_, TYPE_
+continue_seek:
+        .word   NIP_                                    ; *pad+1 *here-1 -- *here-1 
+
+        .word   DUP_, IWORD_, 0xFFFE, BIC_              ; * *here-1 -- *here-1 *here-1&0xFFFE
+        .word   SUB_                                    ; * -- odd(*here-1)
+        .word   IWORD_, 3, SUB_                         ; * -- *here.next
+
+        .word   PAD_, FETCH_, SWAP_                     ; * -- *pad *here.next
+        .word   DUP_, FETCH_                            ; * -- *pad *here.next pad_word 
+        .word   BRNZ_, cmpstr                           ; * -- *pad *here.next 
+        .word   DROP_
+
+;        .word   IWORD_, topd, COUNT_, TYPE_             ; * -- *pad *here.next 
+        .word   IWORD_, 0, OVER_, CFETCH_
+next_val:
+        .word   IWORD_, '0', SUB_                       ; -- pad val *pad-0x30
+        .word   DUP_, BRS_, fault                       ; check for digit < 0
+        .word   DUP_, IWORD_, '9'+1, SUB_, BRS_, make   ; check for digit in 0..9
+        .word   IWORD_, 0xEF, ADD_                      ; -- pad val *pad-0x30+0x030-0x45
+        .word   DUP_, IWORD_, 16., SUB_, BRNS_, fault   ; check for digit > 15
+make:
+        .word   SWAP_, SHL4_, OR_                       ; -- pad val<<4|digit
+        .word   SWAP_, INC_, SWAP_, OVER_, CFETCH_      ; -- pad++ val *(pad++)
+        .word   DUP_, IWORD_, ' ', EQU_                 ; -- pad++ val *(pad++) *(pad++)==' '
+        .word   OVER_, IWORD_, 13., EQU_                ; -- pad++ val *(pad++) *(pad++)==' ' *(pad++)==13
+        .word   OR_, BRZ_, next_val                     ; -- pad++ val *(pad++)
+        .word   DROP_                                   ; -- pad++ val
+        .word   SWAP_                                   ; -- val pad++
+
+        .word   IWORD_, ' ', SWAP_                      ; * -- val ' ' pad++
+        .word   SKIPC_                                  ; * -- val *new_pad 
+        .word   PAD_, STORE_                            ; * -- val
+
+       
+        .word   BR_, seek_dic_next      ; work
+
+fault:
 
 F4LOOP:
         .word   BR_, F4LOOP
+
+SKIPC_: ; пропуск символа в строке   ( char addr -- new_addr)
+        jsr     R5,     F4VM
+skipc_loop:
+        .word   DUP2_                                  ; * -- skip_ch addr skip_ch addr 
+        .word   CFETCH_, EQU_, BRZ_, skipc_exit        ; * -- skip_ch addr *addr==skip_ch
+        .word   INC_, BR_, skipc_loop                  ; * -- skip_ch addr++
+skipc_exit:
+        .word   NIP_, RET_
 
 SPACE_:
         jsr     R5,     F4VM
@@ -40,11 +154,11 @@ CR_:
 
 COUNT_: ; COUNT - transform string (ptr_string -- address_string len_string)
         jsr     R5,     F4VM
-        .word   DUP_, CFETCH_, RET_                     ; &hello, count
+        .word   DUP_, INC_, SWAP_, CFETCH_,  RET_       ; -- &hello-1 count
 
 TYPE_:  ; string_addr string_len --
         jsr     R5,     F4VM
-        .word   OVER_, ADD_, SWAP_                      ; &hello_end, &hello
+        .word   OVER_, ADD_, DEC_, SWAP_, DEC_          ; &hello_end, &hello
 output:
         .word   INC_, DUP_, CFETCH_                     ; &hello_end, &(hello+1), char
         .word   EMIT_                                   ; &hello_end, &(hello+1)
@@ -77,9 +191,12 @@ continuedump:
         .word   SPACE_                                  ; * -- stop start
         .word   INC2_, DUP2_                            ; * -- stop start+2 stop start+2
         .word   EQU_, BRZ_, nextdump                    ; * -- stop start+2
+        .word   DROP2_
         .word   RET_
 
-
+EXEC_: ; -- addr
+        mov     R5,             -(R4)
+        mov     (SP)+,          PC
 F4VM:
         mov     (SP)+,          -(R4)                   ; st -> st_ret
         mov     (R5)+,          PC
@@ -94,13 +211,16 @@ DUP2_:  ; b c -- b c b c
 OVER_:  ; b c -- b c b
         mov     2(SP),          -(SP)
         mov     (R5)+,          PC
+DUP_:
+        mov     (SP),           -(SP)
+        mov     (R5)+,          PC
+NIP_: ; a b -- b
+        mov     (SP)+,          (SP)
+        mov     (R5)+,          PC
 SWAP_: ; b c -- c b
         mov     (SP)+,          R0
         mov     (SP),           -(SP)
         mov     R0,             2(SP)
-        mov     (R5)+,          PC
-DUP_:
-        mov     (SP),           -(SP)
         mov     (R5)+,          PC
 DROP_:
         add     #2,             SP
@@ -108,8 +228,14 @@ DROP_:
 DROP2_:
         add     #4,             SP
         mov     (R5)+,          PC
+OR_:   
+        bis     (SP)+,          (SP)
+        mov     (R5)+,          PC
 ADD_:   
         add     (SP)+,          (SP)
+        mov     (R5)+,          PC
+SUB_:   
+        sub     (SP)+,          (SP)
         mov     (R5)+,          PC
 BIC_:   
         bic     (SP)+,          (SP)
@@ -173,6 +299,16 @@ equ_set1:
 BR_:
         mov     (R5)+,          R5
         mov     (R5)+,          PC
+BRNS_:
+        mov     (SP)+,          R0
+        bmi     br_skip
+        mov     (R5)+,          R5
+        mov     (R5)+,          PC
+BRS_:
+        mov     (SP)+,          R0
+        bpl     br_skip
+        mov     (R5)+,          R5
+        mov     (R5)+,          PC
 BRZ_:
         cmp     #0,             (SP)+
         bne     br_skip
@@ -191,11 +327,35 @@ STORE_:
         mov     2(SP),          @(SP)
         add     #4,             SP
         mov     (R5)+,          PC
+CSTORE_:
+        movb    2(SP),          @(SP)
+        add     #4,             SP
+        mov     (R5)+,          PC
 FETCH_:
         mov     @(SP),          (SP)
         mov     (R5)+,          PC
 CFETCH_:
-        movb    @(SP),          (SP)
+        movb    @(SP),          R0
+        bic     #0xFF00,        R0
+        mov     R0,             (SP)
+        mov     (R5)+,          PC
+; system constant - pointer, address, etc
+HERE_:   ; pointer to last forth paragraph
+        mov     #HERE,          -(SP)
+        mov     (R5)+,          PC
+DEEP_:
+        mov     #STACKA,        R0
+        sub     SP,             R0
+        mov     R0,             -(SP)
+        mov     (R5)+,          PC
+PAD_:   ; pointer to forth word in buffer
+        mov     #PAD,           -(SP)
+        mov     (R5)+,          PC
+HIB_:   ; start position to input buffer
+        mov     #buffer,        -(SP)
+        mov     (R5)+,          PC
+FIB_:   ; current position to input buffer
+        mov     #FIB,           -(SP)
         mov     (R5)+,          PC
 EMIT_:
 ; cursor hide
@@ -236,21 +396,46 @@ emit_CR:
         bic     #0x01FF,        R2
         mov     R2,             cursor
         jmp     cursor_paint
+VALH_:
+        
+        .word   0x0000
+        .word   HEX_
+        .word   0 
+        .ASCII  "xeh."
+        .word   dump_
+        .word   0 
+        .ASCII  "pmud"
+HERE:
 
 hextable:
         .ASCII  "0123456789ABCDEF"
 hello:
         .byte   17.
-        .ASCII  "F4/11 CORE 0.003"
+        .ASCII  "F4/11 CORE 0.005"
         .byte   13.
 OK:
-        .byte   5., 13.
-        .ASCII  "F4> "
-
+        .byte   4. 
+        .ASCII  ":F>"
+topd:
+        .byte   7., 13.
+        .ASCII  "topd !"
+find:
+        .byte   7., 13.
+        .ASCII  "find !"
+unfind:
+        .byte   5. 
+        .ASCII  " uf!"
+        .byte   13.
+PAD:
+        .word   buffer
+FIB:
+        .word   buffer
 cursor:
         .word   0xB800       
         .word   0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
 STACKA:
         .word   0,0,0,0,0,0,0,0,0,0,0,0,0
 STACKR:
+buffer:
+        .ASCII  "0123456789012345678901234567890123456789"
 .END

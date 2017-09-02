@@ -101,10 +101,10 @@ wire pixreq = (colcnt[3:0] == 4'b0000);
 
 wire [15:0]PIXCOLOR = (SHIFT[7])? 16'h03E0 : 16'd0;
 wire [15:0]wCOLOR = 
-({SelVSh,SelHSh} == 4'b001)?  `BLANK  :
-({SelVSh,SelHSh} == 4'b011)?  `BLANK  :
-({SelVSh,SelHSh} == 4'b111)?  `BLANK  :
-({SelVSh,SelHSh} == 4'b110)?   PIXCOLOR : `BLANK;
+({SelVSh,SelHSh} == 3'b001)?  `BLANK  :
+({SelVSh,SelHSh} == 3'b011)?  `BLANK  :
+({SelVSh,SelHSh} == 3'b111)?  `BLANK  :
+({SelVSh,SelHSh} == 3'b110)?   PIXCOLOR : `BLANK;
 
 /* --- управляем счетчиками развертки экрана --- */
 //reg VPorchSYNC = 1'b0;
