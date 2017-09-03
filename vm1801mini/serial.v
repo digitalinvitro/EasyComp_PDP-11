@@ -24,7 +24,7 @@ parameter RCONST = 1302;
 
 reg [3:0]num_bits = 10;     //счетчик принятых бит
 reg [7:0]shift_reg = 0;    //сдвиговый регистр приемника
-reg [11:0]cnt = 0;         //счетчик предделитель битрейта
+reg [10:0]cnt = 0;         //счетчик предделитель битрейта
 
 assign rxbyte = shift_reg;
 
@@ -48,7 +48,7 @@ begin
         if(cnt == RCONST/2 && num_bits < 4'd9) shift_reg <= {rx,shift_reg[7:1]};
 
         //счетчик длительности принимаемого бита
-        cnt <= (cnt == RCONST || num_bits == 4'd10)? 12'd0 : cnt + 1'b1;
+        cnt <= (cnt == RCONST || num_bits == 4'd10)? 11'd0 : cnt + 1'b1;
 
         // фиксация готовности по приему стоп-бита
         ready <= (ready)? !rxread : (cnt == RCONST/2 && num_bits == 4'd9);
@@ -75,7 +75,7 @@ parameter RCONST = 1302;
 //передатчик
 reg [8:0]send_reg = 9'b1_1111_1111;
 reg [3:0]send_num = 10;
-reg [11:0]send_cnt;
+reg [10:0]send_cnt;
 
 wire send_time;
 assign send_time = (send_cnt == RCONST);
@@ -102,7 +102,7 @@ begin
                         send_reg <= {1'b1,send_reg[8:1]};
                         send_num <= send_num + 1'b1;
                 end
-                send_cnt <= (send | send_time)? 12'd0 : send_cnt + 1'b1; 
+                send_cnt <= (send | send_time)? 11'd0 : send_cnt + 1'b1; 
         end
 end
 

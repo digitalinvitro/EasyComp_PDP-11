@@ -65,7 +65,8 @@ cmpstr:
         .word   SWAP_, IWORD_, 32., EQU_                ; * -- *pad+1 *here-1 pad_ch==CR pad_ch==SPACE
         .word   OR_, BRZ_, cmp_fault0                   ; * -- *pad+1 *here-1 
 ;
-; поиск успешен
+; поиск успешен, выравниваем указатель в словаре
+;
         .word   DUP_, IWORD_, 0xFFFE, BIC_, SUB_        ; * -- *pad+1 *here-1 odd(*here-1)
         .word   IWORD_, 2, SUB_, FETCH_                 ; * -- *pad+1 exec_addr
         .word   SWAP_                                   ; * -- exec_addr *pad
@@ -110,10 +111,11 @@ continue_seek:
 ;        .word   IWORD_, topd, COUNT_, TYPE_             ; * -- *pad *here.next 
         .word   IWORD_, 0, OVER_, CFETCH_
 next_val:
-        .word   IWORD_, '0', SUB_                       ; -- pad val *pad-0x30
-        .word   DUP_, BRS_, fault                       ; check for digit < 0
-        .word   DUP_, IWORD_, '9'+1, SUB_, BRS_, make   ; check for digit in 0..9
-        .word   IWORD_, 0xEF, ADD_                      ; -- pad val *pad-0x30+0x030-0x45
+        .word   IWORD_, '0', SUB_                       ; -- pad val *pad-0x30=0..9|17..22
+        .word   DUP_, BRS_, fault                       ; check for digit < 0 (-- pad val *pad-0x30 )
+        .word   DUP_, IWORD_, 10., SUB_, BRS_, make     ; check for digit in 0..9
+; digit is A..F(17..22)
+        .word   IWORD_, 7., SUB_                        ; -- pad val *pad-7
         .word   DUP_, IWORD_, 16., SUB_, BRNS_, fault   ; check for digit > 15
 make:
         .word   SWAP_, SHL4_, OR_                       ; -- pad val<<4|digit
@@ -129,12 +131,20 @@ make:
         .word   PAD_, STORE_                            ; * -- val
 
        
-        .word   BR_, seek_dic_next      ; work
+        .word   BR_, seek_dic_next                      ; work
 
 fault:
+        .word   INITST_
+        .word   IWORD_, seekerr, COUNT_, TYPE_
+        .word   BR_, work
+;*************************************************** CORE END *****************************************************************************
+;F4LOOP:
+;        .word   BR_, F4LOOP
 
-F4LOOP:
-        .word   BR_, F4LOOP
+INITST_:
+        mov     #STACKA,        SP
+        mov     #STACKR,        R4
+        mov     (R5)+,          PC
 
 SKIPC_: ; пропуск символа в строке   ( char addr -- new_addr)
         jsr     R5,     F4VM
@@ -402,16 +412,36 @@ VALH_:
         .word   HEX_
         .word   0 
         .ASCII  "xeh."
+        .word   ADD_
+        .byte   0 
+        .ASCII  "+"
+        .word   SUB_
+        .byte   0 
+        .ASCII  "-"
+        .word   CFETCH_
+        .word   0 
+        .ASCII  "@C"
+        .word   FETCH_
+        .byte   0 
+        .ASCII  "@"
+        .word   CSTORE_
+        .word   0 
+        .ASCII  "!C"
+        .word   STORE_
+        .byte   0 
+        .ASCII  "!"
         .word   dump_
         .word   0 
         .ASCII  "pmud"
 HERE:
 
+        align   2
+
 hextable:
         .ASCII  "0123456789ABCDEF"
 hello:
         .byte   17.
-        .ASCII  "F4/11 CORE 0.005"
+        .ASCII  "F4/11 CORE 0.006"
         .byte   13.
 OK:
         .byte   4. 
@@ -426,6 +456,9 @@ unfind:
         .byte   5. 
         .ASCII  " uf!"
         .byte   13.
+seekerr:
+        .byte   9., 13.
+        .ASCII  "Unknown!"
 PAD:
         .word   buffer
 FIB:
