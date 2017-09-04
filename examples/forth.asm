@@ -371,7 +371,7 @@ EMIT_:
 ; cursor hide
         mov     cursor,         R2
         add     #1,             cursor
-        movb    #0x00,          512.(R2)        
+        movb    #0x00,          448.(R2)        
 
         mov     (SP)+,          R0
 ; control code
@@ -399,13 +399,35 @@ emitc_loop:
         bne     emitc_loop
 cursor_paint:
         mov     cursor,         R0
-        movb    #0xFF,          512.(R0)        
+        movb    #0xFF,          448.(R0)        
         mov     (R5)+,          PC
 emit_CR:
+        bic     #0x003F,        R2
+        cmp     #0xF600,        R2
+        bne     emit_CR0
+; scroll
+        mov     #8.,            R3
+scroll_screen:
+        mov     #0xB800,        R0
+scroll_line:
+        mov     64.(R0),        (R0)+
+        cmp     #0xF7C0,        R0
+        bne     scroll_line
+; clear bottom line
+clr_top_line:
+        movb    #0,             (R0)+
+        cmp     #0xF800,        R0
+        bne     clr_top_line
+
+        sub     #1,             R3
+        bne     scroll_screen
+        jmp     emit_CR1
+emit_CR0:
         add     #512.,          R2
-        bic     #0x01FF,        R2
+emit_CR1:
         mov     R2,             cursor
         jmp     cursor_paint
+
 VALH_:
         
         .word   0x0000
@@ -457,8 +479,8 @@ unfind:
         .ASCII  " uf!"
         .byte   13.
 seekerr:
-        .byte   9., 13.
-        .ASCII  "Unknown!"
+        .byte   3. 
+        .ASCII  " ??"
 PAD:
         .word   buffer
 FIB:

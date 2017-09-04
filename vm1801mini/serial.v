@@ -20,7 +20,8 @@ module serial_rx(
 //как (192000000)/38400 = 5000
 // 92000000/38400 ~ 2396 
 // 50000000/38400 ~ 1302
-parameter RCONST = 1302; 
+// 40000000/38400 ~ 1042
+parameter RCONST = 1042; 
 
 reg [3:0]num_bits = 10;     //счетчик принятых бит
 reg [7:0]shift_reg = 0;    //сдвиговый регистр приемника
@@ -70,7 +71,7 @@ module serial_tx(
     output reg busy = 1'b0
     );
 
-parameter RCONST = 1302; 
+parameter RCONST = 1042; 
 
 //передатчик
 reg [8:0]send_reg = 9'b1_1111_1111;

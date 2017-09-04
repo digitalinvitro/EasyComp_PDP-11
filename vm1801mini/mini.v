@@ -31,15 +31,15 @@
   output [4:0]Ro, 
   output [4:0]Bo,
   output [5:0]Go,
-  output HS, VS,
-  output reg [2:0]led = 3'd0
+  output HS, VS
+ // output reg [2:0]led = 3'd0
 );
 localparam DCLO_COUNTER_WIDTH = 4;
 localparam ACLO_COUNTER_WIDTH = 3;
 
 reg [DCLO_COUNTER_WIDTH-1:0] dclo_cnt;
 reg [ACLO_COUNTER_WIDTH-1:0] aclo_cnt;
-//reg [1:0]rreset;
+
 reg aclo_out, dclo_out;
 
 
@@ -185,10 +185,21 @@ wire RX_ready;
 wire [7:0]RX_data;
 serial_rx RX(.reset(!RST[1]), .clk(mclkp), .rx(uart_rx), .rxread(wb_ack_FF7x), .rxbyte(RX_data), .ready(RX_ready));
 
-wire [15:0] ram_data;// = wb_adr[11]? mx_dat[2] : mx_dat[1];
+wire [15:0]BUSV[7:0];
+wire [15:0]vram_data = 
+(wb_adr[15:11] == 24)? BUSV[0]   :
+(wb_adr[15:11] == 25)? BUSV[1]   :
+(wb_adr[15:11] == 26)? BUSV[2]   :
+(wb_adr[15:11] == 27)? BUSV[3]   :
+(wb_adr[15:11] == 28)? BUSV[4]   :
+(wb_adr[15:11] == 29)? BUSV[5]   :
+(wb_adr[15:11] == 30)? BUSV[6]   : BUSV[7];
+
+wire [15:0]ram_data;
 
 assign wb_mux		= (mx_stb[0] ? mx_dat[0] : 16'd0)
 						| (mx_stb[1] ? ram_data  : 16'd0)
+						| (mx_stb[3] ? vram_data  : 16'd0)
 						| (mx_stb[2] ? {TX_busy, RX_ready, 6'd0, RX_data}  : 16'd0);
 
 assign wb_ack_mem = wb_cyc & wb_stb & (ack[1] | wb_we);
@@ -213,39 +224,38 @@ video vga(
         .PixClock(vclk)
 );
 
-wire [15:0]BUSV[7:0];
 wire [7:0]WRV = {6'd0, (mx_stb[3] & wb_we)} << wb_adr[13:11];
 VIDEORAM VRAM0( 
  .clka(vclk), .data_a(8'd0), .addr_a(VADDR[10:0]), .we_a(1'b0), .q_a(vdata[0]),
- .clkb(mclkp), .data_b(wb_out), .addr_b(wb_adr[10:1]), .sel(wb_sel), .we_b(WRV[7]), .q_b(BUSV[0])
+ .clkb(mclkp), .data_b(wb_out), .addr_b(wb_adr[10:1]), .sel(wb_sel), .we_b(WRV[7]), .q_b(BUSV[7])
 );
 VIDEORAM VRAM1( 
  .clka(vclk), .data_a(8'd0), .addr_a(VADDR[10:0]), .we_a(1'b0), .q_a(vdata[1]),
- .clkb(mclkp), .data_b(wb_out), .addr_b(wb_adr[10:1]), .sel(wb_sel), .we_b(WRV[0]), .q_b(BUSV[1])
+ .clkb(mclkp), .data_b(wb_out), .addr_b(wb_adr[10:1]), .sel(wb_sel), .we_b(WRV[0]), .q_b(BUSV[0])
 );
 VIDEORAM VRAM2( 
  .clka(vclk), .data_a(8'd0), .addr_a(VADDR[10:0]), .we_a(1'b0), .q_a(vdata[2]),
- .clkb(mclkp), .data_b(wb_out), .addr_b(wb_adr[10:1]), .sel(wb_sel), .we_b(WRV[1]), .q_b(BUSV[2])
+ .clkb(mclkp), .data_b(wb_out), .addr_b(wb_adr[10:1]), .sel(wb_sel), .we_b(WRV[1]), .q_b(BUSV[1])
 );
 VIDEORAM VRAM3( 
  .clka(vclk), .data_a(8'd0), .addr_a(VADDR[10:0]), .we_a(1'b0), .q_a(vdata[3]),
- .clkb(mclkp), .data_b(wb_out), .addr_b(wb_adr[10:1]), .sel(wb_sel), .we_b(WRV[2]), .q_b(BUSV[3])
+ .clkb(mclkp), .data_b(wb_out), .addr_b(wb_adr[10:1]), .sel(wb_sel), .we_b(WRV[2]), .q_b(BUSV[2])
 );
 VIDEORAM VRAM4( 
  .clka(vclk), .data_a(8'd0), .addr_a(VADDR[10:0]), .we_a(1'b0), .q_a(vdata[4]),
- .clkb(mclkp), .data_b(wb_out), .addr_b(wb_adr[10:1]), .sel(wb_sel), .we_b(WRV[3]), .q_b(BUSV[4])
+ .clkb(mclkp), .data_b(wb_out), .addr_b(wb_adr[10:1]), .sel(wb_sel), .we_b(WRV[3]), .q_b(BUSV[3])
 );
 VIDEORAM VRAM5( 
  .clka(vclk), .data_a(8'd0), .addr_a(VADDR[10:0]), .we_a(1'b0), .q_a(vdata[5]),
- .clkb(mclkp), .data_b(wb_out), .addr_b(wb_adr[10:1]), .sel(wb_sel), .we_b(WRV[4]), .q_b(BUSV[5])
+ .clkb(mclkp), .data_b(wb_out), .addr_b(wb_adr[10:1]), .sel(wb_sel), .we_b(WRV[4]), .q_b(BUSV[4])
 );
 VIDEORAM VRAM6( 
  .clka(vclk), .data_a(8'd0), .addr_a(VADDR[10:0]), .we_a(1'b0), .q_a(vdata[6]),
- .clkb(mclkp), .data_b(wb_out), .addr_b(wb_adr[10:1]), .sel(wb_sel), .we_b(WRV[5]), .q_b(BUSV[6])
+ .clkb(mclkp), .data_b(wb_out), .addr_b(wb_adr[10:1]), .sel(wb_sel), .we_b(WRV[5]), .q_b(BUSV[5])
 );
 VIDEORAM VRAM7( 
  .clka(vclk), .data_a(8'd0), .addr_a(VADDR[10:0]), .we_a(1'b0), .q_a(vdata[7]),
- .clkb(mclkp), .data_b(wb_out), .addr_b(wb_adr[10:1]), .sel(wb_sel), .we_b(WRV[6]), .q_b(BUSV[7])
+ .clkb(mclkp), .data_b(wb_out), .addr_b(wb_adr[10:1]), .sel(wb_sel), .we_b(WRV[6]), .q_b(BUSV[6])
 );
 
 RAM RAMALL(.di(wb_out),.addr(wb_adr),.Q(ram_data),.we(mx_stb[1] & wb_we),.sel(wb_sel),.clk(mclkp));

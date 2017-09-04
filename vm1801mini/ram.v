@@ -71,39 +71,39 @@ wire [22:0]wr = {21'd0, we} << CS;
 
 assign Q = data[CS];
 
-RAM16 RAM_00(.data_a(di),.addr_a(addr[10:1]),.q_a(data[0]),.we_a(wr[0]),.sel_a(sel),.data_b(16'hFFFF),.addr_b(10'h3FF),.we_b(1'b0),.clk(clk));
-RAM16_1 RAM_01(.data_a(di),.addr_a(addr[10:1]),.q_a(data[1]),.we_a(wr[1]),.sel_a(sel),.data_b(16'hFFFF),.addr_b(10'h3FF),.we_b(1'b0),.clk(clk));
-RAM16 RAM_02(.data_a(di),.addr_a(addr[10:1]),.q_a(data[2]),.we_a(wr[2]),.sel_a(sel),.data_b(16'hFFFF),.addr_b(10'h3FF),.we_b(1'b0),.clk(clk));
-RAM16 RAM_03(.data_a(di),.addr_a(addr[10:1]),.q_a(data[3]),.we_a(wr[3]),.sel_a(sel),.data_b(16'hFFFF),.addr_b(10'h3FF),.we_b(1'b0),.clk(clk));
-RAM16 RAM_04(.data_a(di),.addr_a(addr[10:1]),.q_a(data[4]),.we_a(wr[4]),.sel_a(sel),.data_b(16'hFFFF),.addr_b(10'h3FF),.we_b(1'b0),.clk(clk));
-RAM16 RAM_05(.data_a(di),.addr_a(addr[10:1]),.q_a(data[5]),.we_a(wr[5]),.sel_a(sel),.data_b(16'hFFFF),.addr_b(10'h3FF),.we_b(1'b0),.clk(clk));
-RAM16 RAM_06(.data_a(di),.addr_a(addr[10:1]),.q_a(data[6]),.we_a(wr[6]),.sel_a(sel),.data_b(16'hFFFF),.addr_b(10'h3FF),.we_b(1'b0),.clk(clk));
-RAM16 RAM_07(.data_a(di),.addr_a(addr[10:1]),.q_a(data[7]),.we_a(wr[7]),.sel_a(sel),.data_b(16'hFFFF),.addr_b(10'h3FF),.we_b(1'b0),.clk(clk));
-RAM16 RAM_08(.data_a(di),.addr_a(addr[10:1]),.q_a(data[8]),.we_a(wr[8]),.sel_a(sel),.data_b(16'hFFFF),.addr_b(10'h3FF),.we_b(1'b0),.clk(clk));
-RAM16 RAM_09(.data_a(di),.addr_a(addr[10:1]),.q_a(data[9]),.we_a(wr[9]),.sel_a(sel),.data_b(16'hFFFF),.addr_b(10'h3FF),.we_b(1'b0),.clk(clk));
-RAM16 RAM_10(.data_a(di),.addr_a(addr[10:1]),.q_a(data[10]),.we_a(wr[10]),.sel_a(sel),.data_b(16'hFFFF),.addr_b(10'h3FF),.we_b(1'b0),.clk(clk));
-RAM16 RAM_11(.data_a(di),.addr_a(addr[10:1]),.q_a(data[11]),.we_a(wr[11]),.sel_a(sel),.data_b(16'hFFFF),.addr_b(10'h3FF),.we_b(1'b0),.clk(clk));
-RAM16 RAM_12(.data_a(di),.addr_a(addr[10:1]),.q_a(data[12]),.we_a(wr[12]),.sel_a(sel),.data_b(16'hFFFF),.addr_b(10'h3FF),.we_b(1'b0),.clk(clk));
-RAM16 RAM_13(.data_a(di),.addr_a(addr[10:1]),.q_a(data[13]),.we_a(wr[13]),.sel_a(sel),.data_b(16'hFFFF),.addr_b(10'h3FF),.we_b(1'b0),.clk(clk));
-RAM16 RAM_14(.data_a(di),.addr_a(addr[10:1]),.q_a(data[14]),.we_a(wr[14]),.sel_a(sel),.data_b(16'hFFFF),.addr_b(10'h3FF),.we_b(1'b0),.clk(clk));
-RAM16 RAM_15(.data_a(di),.addr_a(addr[10:1]),.q_a(data[15]),.we_a(wr[15]),.sel_a(sel),.data_b(16'hFFFF),.addr_b(10'h3FF),.we_b(1'b0),.clk(clk));
-RAM16 RAM_16(.data_a(di),.addr_a(addr[10:1]),.q_a(data[16]),.we_a(wr[16]),.sel_a(sel),.data_b(16'hFFFF),.addr_b(10'h3FF),.we_b(1'b0),.clk(clk));
-RAM16 RAM_17(.data_a(di),.addr_a(addr[10:1]),.q_a(data[17]),.we_a(wr[17]),.sel_a(sel),.data_b(16'hFFFF),.addr_b(10'h3FF),.we_b(1'b0),.clk(clk));
-RAM16 RAM_18(.data_a(di),.addr_a(addr[10:1]),.q_a(data[18]),.we_a(wr[18]),.sel_a(sel),.data_b(16'hFFFF),.addr_b(10'h3FF),.we_b(1'b0),.clk(clk));
-RAM16 RAM_19(.data_a(di),.addr_a(addr[10:1]),.q_a(data[19]),.we_a(wr[19]),.sel_a(sel),.data_b(16'hFFFF),.addr_b(10'h3FF),.we_b(1'b0),.clk(clk));
-RAM16 RAM_20(.data_a(di),.addr_a(addr[10:1]),.q_a(data[20]),.we_a(wr[20]),.sel_a(sel),.data_b(16'hFFFF),.addr_b(10'h3FF),.we_b(1'b0),.clk(clk));
-RAM16 RAM_21(.data_a(di),.addr_a(addr[10:1]),.q_a(data[21]),.we_a(wr[21]),.sel_a(sel),.data_b(16'hFFFF),.addr_b(10'h3FF),.we_b(1'b0),.clk(clk));
-RAM16 RAM_22(.data_a(di),.addr_a(addr[10:1]),.q_a(data[22]),.we_a(wr[22]),.sel_a(sel),.data_b(16'hFFFF),.addr_b(10'h3FF),.we_b(1'b0),.clk(clk));
+RAM16 RAM_00(.data_a(di),.addr_a(addr[10:1]),.q_a(data[0]),.we_a(wr[0]),.sel_a(sel),.clk(clk));
+RAM16_1 RAM_01(.data_a(di),.addr_a(addr[10:1]),.q_a(data[1]),.we_a(wr[1]),.sel_a(sel),.clk(clk));
+RAM16 RAM_02(.data_a(di),.addr_a(addr[10:1]),.q_a(data[2]),.we_a(wr[2]),.sel_a(sel),.clk(clk));
+RAM16 RAM_03(.data_a(di),.addr_a(addr[10:1]),.q_a(data[3]),.we_a(wr[3]),.sel_a(sel),.clk(clk));
+RAM16 RAM_04(.data_a(di),.addr_a(addr[10:1]),.q_a(data[4]),.we_a(wr[4]),.sel_a(sel),.clk(clk));
+RAM16 RAM_05(.data_a(di),.addr_a(addr[10:1]),.q_a(data[5]),.we_a(wr[5]),.sel_a(sel),.clk(clk));
+RAM16 RAM_06(.data_a(di),.addr_a(addr[10:1]),.q_a(data[6]),.we_a(wr[6]),.sel_a(sel),.clk(clk));
+RAM16 RAM_07(.data_a(di),.addr_a(addr[10:1]),.q_a(data[7]),.we_a(wr[7]),.sel_a(sel),.clk(clk));
+RAM16 RAM_08(.data_a(di),.addr_a(addr[10:1]),.q_a(data[8]),.we_a(wr[8]),.sel_a(sel),.clk(clk));
+RAM16 RAM_09(.data_a(di),.addr_a(addr[10:1]),.q_a(data[9]),.we_a(wr[9]),.sel_a(sel),.clk(clk));
+RAM16 RAM_10(.data_a(di),.addr_a(addr[10:1]),.q_a(data[10]),.we_a(wr[10]),.sel_a(sel),.clk(clk));
+RAM16 RAM_11(.data_a(di),.addr_a(addr[10:1]),.q_a(data[11]),.we_a(wr[11]),.sel_a(sel),.clk(clk));
+RAM16 RAM_12(.data_a(di),.addr_a(addr[10:1]),.q_a(data[12]),.we_a(wr[12]),.sel_a(sel),.clk(clk));
+RAM16 RAM_13(.data_a(di),.addr_a(addr[10:1]),.q_a(data[13]),.we_a(wr[13]),.sel_a(sel),.clk(clk));
+RAM16 RAM_14(.data_a(di),.addr_a(addr[10:1]),.q_a(data[14]),.we_a(wr[14]),.sel_a(sel),.clk(clk));
+RAM16 RAM_15(.data_a(di),.addr_a(addr[10:1]),.q_a(data[15]),.we_a(wr[15]),.sel_a(sel),.clk(clk));
+RAM16 RAM_16(.data_a(di),.addr_a(addr[10:1]),.q_a(data[16]),.we_a(wr[16]),.sel_a(sel),.clk(clk));
+RAM16 RAM_17(.data_a(di),.addr_a(addr[10:1]),.q_a(data[17]),.we_a(wr[17]),.sel_a(sel),.clk(clk));
+RAM16 RAM_18(.data_a(di),.addr_a(addr[10:1]),.q_a(data[18]),.we_a(wr[18]),.sel_a(sel),.clk(clk));
+RAM16 RAM_19(.data_a(di),.addr_a(addr[10:1]),.q_a(data[19]),.we_a(wr[19]),.sel_a(sel),.clk(clk));
+RAM16 RAM_20(.data_a(di),.addr_a(addr[10:1]),.q_a(data[20]),.we_a(wr[20]),.sel_a(sel),.clk(clk));
+RAM16 RAM_21(.data_a(di),.addr_a(addr[10:1]),.q_a(data[21]),.we_a(wr[21]),.sel_a(sel),.clk(clk));
+RAM16 RAM_22(.data_a(di),.addr_a(addr[10:1]),.q_a(data[22]),.we_a(wr[22]),.sel_a(sel),.clk(clk));
 
 endmodule
 
 
 module RAM16(
-        input [15:0] data_a, data_b,
-        input [9:0] addr_a, addr_b,
-        input we_a, we_b, clk,
+        input [15:0] data_a,
+        input [9:0] addr_a, 
+        input we_a, clk,
 		  input [1:0] sel_a,
-        output[15:0] q_a, q_b
+        output[15:0] q_a
 );
 
 wire [1:0] WEA = we_a? sel_a : 2'b00;
@@ -125,7 +125,7 @@ wire [1:0] WEA = we_a? sel_a : 2'b00;
    RAMB16BWER #(
       // DATA_WIDTH_A/DATA_WIDTH_B: 0, 1, 2, 4, 9, 18, or 36
       .DATA_WIDTH_A(18),
-      .DATA_WIDTH_B(18),
+      .DATA_WIDTH_B(0),
       // DOA_REG/DOB_REG: Optional output register (0 or 1)
       .DOA_REG(0),
       .DOB_REG(0),
@@ -142,8 +142,8 @@ wire [1:0] WEA = we_a? sel_a : 2'b00;
       .INITP_06(256'h0000000000000000000000000000000000000000000000000000000000000000),
       .INITP_07(256'h0000000000000000000000000000000000000000000000000000000000000000),
       // INIT_00 to INIT_3F: Initial memory contents.
-.INIT_00(256'h036A_FF70_029A_0054_029A_0202_01F4_0458_029A_1547_000E_15C5_04D8_15C4_04BE_15C6),
-.INIT_01(256'h0382_02A2_BFFF_029A_FF70_029A_036A_03B0_03AA_0202_01F4_046A_029A_0226_01E8_039A),
+.INIT_00(256'h036A_FF70_029A_0054_029A_0202_01F4_0484_029A_1547_000E_15C5_04FE_15C4_04E4_15C6),
+.INIT_01(256'h0382_02A2_BFFF_029A_FF70_029A_036A_03B0_03AA_0202_01F4_0496_029A_0226_01E8_039A),
 .INIT_02(256'h0350_032C_0008_029A_02A8_03B6_02A8_02D2_FF00_029A_0382_02A2_003C_0350_02D2_02A2),
 .INIT_03(256'h02A2_0382_03B0_003C_033C_036A_03B0_0376_02A2_0020_029A_0314_0382_03B0_02BA_007A),
 .INIT_04(256'h0382_03A4_036A_03A4_03AA_02C0_003C_0350_032C_000D_029A_036A_03B0_0308_0376_02A2),
@@ -155,11 +155,11 @@ wire [1:0] WEA = we_a? sel_a : 2'b00;
 .INIT_0A(256'h0172_0348_02CE_000A_029A_02A8_01AC_0348_02A8_02CE_0030_029A_0388_02A2_0000_029A),
 .INIT_0B(256'h02A2_02B0_0308_02B0_02C6_02FA_02B0_01AC_0340_02CE_0010_029A_02A8_02CE_0007_029A),
 .INIT_0C(256'h0020_029A_02B0_02BA_0148_0350_02C6_032C_000D_029A_02A2_032C_0020_029A_02A8_0388),
-.INIT_0D(256'h15C4_04BE_15C6_0020_033C_0202_01F4_0484_029A_01BA_00FE_033C_036A_03A4_01C4_02B0),
-.INIT_0E(256'h00B2_0977_0296_02AC_01C8_033C_0308_01D8_0350_032C_0388_029E_00CA_0977_1547_04D8),
+.INIT_0D(256'h15C4_04E4_15C6_0020_033C_0202_01F4_04B0_029A_01BA_00FE_033C_036A_03A4_01C4_02B0),
+.INIT_0E(256'h00B2_0977_0296_02AC_01C8_033C_0308_01D8_0350_032C_0388_029E_00CA_0977_1547_04FE),
 .INIT_0F(256'h0388_02B0_0308_02A8_009A_0977_0296_03B6_000D_029A_00A6_0977_0296_03B6_0020_029A),
 .INIT_10(256'h0350_032C_02A2_02A2_03B6_0388_02A8_0308_0314_02B0_0314_02CA_02A2_008C_0977_0296),
-.INIT_11(256'h0388_02CA_0448_029A_02D6_02D2_0FFF_029A_02A2_0004_029A_0068_0977_0296_02C0_0210),
+.INIT_11(256'h0388_02CA_0474_029A_02D6_02D2_0FFF_029A_02A2_0004_029A_0068_0977_0296_02C0_0210),
 .INIT_12(256'h02B0_02CA_02A2_0038_0977_0296_02C0_022E_0350_031A_02A8_02B0_02FA_02B0_0314_03B6),
 .INIT_13(256'h01DC_0226_0382_02A8_01DC_01DC_01DC_0226_02A8_01E8_0278_0360_02D2_FFF0_029A_02A8),
 .INIT_14(256'h1DA6_1547_1566_1547_1505_1547_15A4_1587_1164_0296_02C0_0260_0350_032C_029E_030E),
@@ -170,18 +170,20 @@ wire [1:0] WEA = we_a? sel_a : 2'b00;
 .INIT_19(256'h1547_1545_1547_FFFF_15CE_1547_0000_15CE_0303_258E_1547_FFFF_15CE_1547_0000_15CE),
 .INIT_1A(256'h1547_0002_65C5_1547_1545_0202_0000_25D6_1547_1545_8007_1580_1547_1545_810B_1580),
 .INIT_1B(256'h0004_65C6_0000_0002_9DBE_1547_0004_65C6_0000_0002_1DBE_1547_1545_03FA_0000_25D6),
-.INIT_1C(256'hE180_04BE_15C0_1547_0448_15E6_1547_100E_FF00_45C0_0000_9F80_1547_0000_1F8E_1547),
-.INIT_1D(256'h00D2_0001_65F7_00D8_1DC2_1547_0490_15E6_1547_04D8_15E6_1547_048E_15E6_1547_1026),
-.INIT_1E(256'h0020_15C0_00B6_10B7_0001_E5C2_0206_0008_25C0_031E_000D_25C0_1580_0200_0000_95F2),
+.INIT_1C(256'hE180_04E4_15C0_1547_0474_15E6_1547_100E_FF00_45C0_0000_9F80_1547_0000_1F8E_1547),
+.INIT_1D(256'h00F8_0001_65F7_00FE_1DC2_1547_04B6_15E6_1547_04FE_15E6_1547_04B4_15E6_1547_1026),
+.INIT_1E(256'h0020_15C0_00DC_10B7_0001_E5C2_0206_0008_25C0_031E_000D_25C0_1580_01C0_0000_95F2),
 .INIT_1F(256'h1DC0_02FB_2040_0040_65C2_940A_0008_65C1_1001_0800_65C0_6000_6000_6000_0020_E5C0),
-.INIT_20(256'h0000_0226_0000_FFE4_0077_007C_10B7_01FF_45C2_0200_65C2_1547_0200_00FF_95F0_0090),
-.INIT_21(256'h2100_036A_4321_0000_0376_4000_0382_4340_0000_0388_2D00_02CE_2B00_02CA_2E68_6578),
-.INIT_22(256'h4320_3131_2F34_4611_4645_4443_4241_3938_3736_3534_3332_3130_6475_6D70_0000_0256),
-.INIT_23(256'h2005_2120_646E_6966_0D07_2120_6470_6F74_0D07_3E46_3A04_0D36_3030_2E30_2045_524F),
-.INIT_24(256'h0000_0000_0000_0000_0000_0000_B800_04D8_04D8_216E_776F_6E6B_6E55_0D09_0D21_6675),
-.INIT_25(256'h0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000),
-.INIT_26(256'h3736_3534_3332_3130_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000),
-.INIT_27(256'h3938_3736_3534_3332_3130_3938_3736_3534_3332_3130_3938_3736_3534_3332_3130_3938),
+.INIT_20(256'h0040_1C10_B800_15C0_0008_15C3_0213_F600_25C2_003F_45C2_1547_01C0_00FF_95F0_00B6),
+.INIT_21(256'h10B7_0200_65C2_0004_0077_02F1_0001_E5C3_02FB_F800_25C0_0000_95D0_02FB_F7C0_25C0),
+.INIT_22(256'h0382_4340_0000_0388_2D00_02CE_2B00_02CA_2E68_6578_0000_0226_0000_FFB8_0077_0076),
+.INIT_23(256'h4241_3938_3736_3534_3332_3130_6475_6D70_0000_0256_2100_036A_4321_0000_0376_4000),
+.INIT_24(256'h6470_6F74_0D07_3E46_3A04_0D36_3030_2E30_2045_524F_4320_3131_2F34_4611_4645_4443),
+.INIT_25(256'h0000_0000_0000_B800_04FE_04FE_3F3F_2003_0D21_6675_2005_2120_646E_6966_0D07_2120),
+.INIT_26(256'h0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000),
+.INIT_27(256'h3130_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000),
+.INIT_28(256'h3332_3130_3938_3736_3534_3332_3130_3938_3736_3534_3332_3130_3938_3736_3534_3332),
+.INIT_29(256'h0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_0000_3938_3736_3534),
 //      .INIT_0E(256'h0000000000000000000000000000000000000000000000000000000000000000),
 //      .INIT_0F(256'h0000000000000000000000000000000000000000000000000000000000000000),
 //      .INIT_10(256'h0000000000000000000000000000000000000000000000000000000000000000),
@@ -208,8 +210,8 @@ wire [1:0] WEA = we_a? sel_a : 2'b00;
 //      .INIT_25(256'h0000000000000000000000000000000000000000000000000000000000000000),
 //      .INIT_26(256'h0000000000000000000000000000000000000000000000000000000000000000),
 //      .INIT_27(256'h0000000000000000000000000000000000000000000000000000000000000000),
-      .INIT_28(256'h0000000000000000000000000000000000000000000000000000000000000000),
-      .INIT_29(256'h0000000000000000000000000000000000000000000000000000000000000000),
+//      .INIT_28(256'h0000000000000000000000000000000000000000000000000000000000000000),
+//      .INIT_29(256'h0000000000000000000000000000000000000000000000000000000000000000),
       .INIT_2A(256'h0000000000000000000000000000000000000000000000000000000000000000),
       .INIT_2B(256'h0000000000000000000000000000000000000000000000000000000000000000),
       .INIT_2C(256'h0000000000000000000000000000000000000000000000000000000000000000),
@@ -257,9 +259,6 @@ wire [1:0] WEA = we_a? sel_a : 2'b00;
       // Port A Data: 32-bit (each) output: Port A data
       .DOA(q_a),       // 32-bit output: A port data output
       .DOPA(),         // 4-bit output: A port parity output
-      // Port B Data: 32-bit (each) output: Port B data
-      .DOB(q_b),       // 32-bit output: B port data output
-      .DOPB(),         // 4-bit output: B port parity output
       // Port A Address/Control Signals: 14-bit (each) input: Port A address and control signals
       .ADDRA({addr_a,4'd0}),  // 14-bit input: A port address input
       .CLKA(clk),      // 1-bit input: A port clock input
@@ -270,27 +269,31 @@ wire [1:0] WEA = we_a? sel_a : 2'b00;
       // Port A Data: 32-bit (each) input: Port A data
       .DIA({16'hFFFF,data_a}),    // 32-bit input: A port data input
       .DIPA(4'hF),     // 4-bit input: A port parity input
+		
+      // Port B Data: 32-bit (each) output: Port B data
+      .DOB(),          // 32-bit output: B port data output
+      .DOPB(),         // 4-bit output: B port parity output
       // Port B Address/Control Signals: 14-bit (each) input: Port B address and control signals
-      .ADDRB({addr_b,4'd0}),  // 14-bit input: B port address input
-      .CLKB(clk),      // 1-bit input: B port clock input
-      .ENB(1'b1),      // 1-bit input: B port enable input
+      .ADDRB(),        // 14-bit input: B port address input
+      .CLKB(),         // 1-bit input: B port clock input
+      .ENB(1'b0),      // 1-bit input: B port enable input
       .REGCEB(1'b0),   // 1-bit input: B port register clock enable input
       .RSTB(1'b0),     // 1-bit input: B port register set/reset input
-      .WEB({4{we_b}}), // 4-bit input: Port B byte-wide write enable input
+      .WEB(4'd0),      // 4-bit input: Port B byte-wide write enable input
       // Port B Data: 32-bit (each) input: Port B data
-      .DIB({16'hFFFF,data_b}),    // 32-bit input: B port data input
-      .DIPB(4'hF)      // 4-bit input: B port parity input
+      .DIB(),          // 32-bit input: B port data input
+      .DIPB()          // 4-bit input: B port parity input
    );
 
    // End of RAMB16BWER_inst instantiation
 endmodule                               
 
 module RAM16_1(
-        input [15:0] data_a, data_b,
-        input [9:0] addr_a, addr_b,
-        input we_a, we_b, clk,
+        input [15:0] data_a, 
+        input [9:0] addr_a, 
+        input we_a, clk,
 		  input [1:0] sel_a,
-        output[15:0] q_a, q_b
+        output[15:0] q_a
 );
 
 wire [1:0] WEA = we_a? sel_a : 2'b00;
@@ -312,7 +315,7 @@ wire [1:0] WEA = we_a? sel_a : 2'b00;
    RAMB16BWER #(
       // DATA_WIDTH_A/DATA_WIDTH_B: 0, 1, 2, 4, 9, 18, or 36
       .DATA_WIDTH_A(18),
-      .DATA_WIDTH_B(18),
+      .DATA_WIDTH_B(0),
       // DOA_REG/DOB_REG: Optional output register (0 or 1)
       .DOA_REG(0),
       .DOB_REG(0),
@@ -419,9 +422,6 @@ wire [1:0] WEA = we_a? sel_a : 2'b00;
       // Port A Data: 32-bit (each) output: Port A data
       .DOA(q_a),       // 32-bit output: A port data output
       .DOPA(),         // 4-bit output: A port parity output
-      // Port B Data: 32-bit (each) output: Port B data
-      .DOB(q_b),       // 32-bit output: B port data output
-      .DOPB(),         // 4-bit output: B port parity output
       // Port A Address/Control Signals: 14-bit (each) input: Port A address and control signals
       .ADDRA({addr_a,4'd0}),  // 14-bit input: A port address input
       .CLKA(clk),      // 1-bit input: A port clock input
@@ -432,16 +432,20 @@ wire [1:0] WEA = we_a? sel_a : 2'b00;
       // Port A Data: 32-bit (each) input: Port A data
       .DIA({16'hFFFF,data_a}),    // 32-bit input: A port data input
       .DIPA(4'hF),     // 4-bit input: A port parity input
+
+      // Port B Data: 32-bit (each) output: Port B data
+      .DOB(),          // 32-bit output: B port data output
+      .DOPB(),         // 4-bit output: B port parity output
       // Port B Address/Control Signals: 14-bit (each) input: Port B address and control signals
-      .ADDRB({addr_b,4'd0}),  // 14-bit input: B port address input
-      .CLKB(clk),      // 1-bit input: B port clock input
-      .ENB(1'b1),      // 1-bit input: B port enable input
+      .ADDRB(),        // 14-bit input: B port address input
+      .CLKB(),         // 1-bit input: B port clock input
+      .ENB(1'b0),      // 1-bit input: B port enable input
       .REGCEB(1'b0),   // 1-bit input: B port register clock enable input
       .RSTB(1'b0),     // 1-bit input: B port register set/reset input
-      .WEB({4{we_b}}), // 4-bit input: Port B byte-wide write enable input
+      .WEB(4'd0),      // 4-bit input: Port B byte-wide write enable input
       // Port B Data: 32-bit (each) input: Port B data
-      .DIB({16'hFFFF,data_b}),    // 32-bit input: B port data input
-      .DIPB(4'hF)      // 4-bit input: B port parity input
+      .DIB(),          // 32-bit input: B port data input
+      .DIPB()          // 4-bit input: B port parity input
    );
 
    // End of RAMB16BWER_inst instantiation

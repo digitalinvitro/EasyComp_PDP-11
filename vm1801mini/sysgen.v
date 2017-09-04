@@ -91,8 +91,8 @@ wire clkbuf;
    DCM_SP #(
       .CLKDV_DIVIDE(2.0),                   // CLKDV divide value
                                             // (1.5,2,2.5,3,3.5,4,4.5,5,5.5,6,6.5,7,7.5,8,9,10,11,12,13,14,15,16).
-      .CLKFX_DIVIDE(24),                     // Divide value on CLKFX outputs - D - (1-32)
-      .CLKFX_MULTIPLY(25),                   // Multiply value on CLKFX outputs - M - (2-32)
+      .CLKFX_DIVIDE(6),                     // Divide value on CLKFX outputs - D - (1-32)
+      .CLKFX_MULTIPLY(5),                   // Multiply value on CLKFX outputs - M - (2-32)
       .CLKIN_DIVIDE_BY_2("FALSE"),          // CLKIN divide by two (TRUE/FALSE)
       .CLKIN_PERIOD(20.833333),             // Input clock period specified in nS
       .CLKOUT_PHASE_SHIFT("NONE"),          // Output phase shift (NONE, FIXED, VARIABLE)
