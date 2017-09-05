@@ -1,9 +1,12 @@
         CONVERT1251TOKOI8R OFF 
 ;        .LA     0
 ;        .ORG    0
-
-        mov     #STACKA,        SP
-        mov     #STACKR,        R4
+;
+; STACKR -> B6C0..B680 : 
+; STACKA -> B7A0..B6B0 : 
+; buffer -> B7B0..B800 : 80
+        mov     #0xB7A0,        SP
+        mov     #0xB6C0,        R4
         mov     #F4CORE,        R5
         mov     (R5)+,          PC
 
@@ -142,8 +145,8 @@ fault:
 ;        .word   BR_, F4LOOP
 
 INITST_:
-        mov     #STACKA,        SP
-        mov     #STACKR,        R4
+        mov     #0xB7A0,        SP
+        mov     #0xB6C0,        R4
         mov     (R5)+,          PC
 
 SKIPC_: ; пропуск символа в строке   ( char addr -- new_addr)
@@ -354,7 +357,7 @@ HERE_:   ; pointer to last forth paragraph
         mov     #HERE,          -(SP)
         mov     (R5)+,          PC
 DEEP_:
-        mov     #STACKA,        R0
+        mov     #0xB7A0,        R0
         sub     SP,             R0
         mov     R0,             -(SP)
         mov     (R5)+,          PC
@@ -362,7 +365,7 @@ PAD_:   ; pointer to forth word in buffer
         mov     #PAD,           -(SP)
         mov     (R5)+,          PC
 HIB_:   ; start position to input buffer
-        mov     #buffer,        -(SP)
+        mov     #0xB7B0,        -(SP)
         mov     (R5)+,          PC
 FIB_:   ; current position to input buffer
         mov     #FIB,           -(SP)
@@ -482,15 +485,15 @@ seekerr:
         .byte   3. 
         .ASCII  " ??"
 PAD:
-        .word   buffer
+        .word   0xB7B0
 FIB:
-        .word   buffer
+        .word   0xB7B0
 cursor:
         .word   0xB800       
-        .word   0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
-STACKA:
-        .word   0,0,0,0,0,0,0,0,0,0,0,0,0
-STACKR:
-buffer:
-        .ASCII  "0123456789012345678901234567890123456789"
+;        .word   0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0
+;STACKA:
+;        .word   0,0,0,0,0,0,0,0,0,0,0,0,0
+;STACKR:
+;buffer:
+;        .ASCII  "0123456789012345678901234567890123456789"
 .END
