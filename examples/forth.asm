@@ -455,6 +455,9 @@ VALH_:
         .word   STORE_
         .byte   0 
         .ASCII  "!"
+        .word   EXEC_
+        .word   0 
+        .ASCII  "og"
         .word   dump_
         .word   0 
         .ASCII  "pmud"

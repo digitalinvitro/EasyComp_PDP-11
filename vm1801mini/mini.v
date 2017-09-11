@@ -19,7 +19,7 @@
 //
 //////////////////////////////////////////////////////////////////////////////////
 
-`define 	DE0_DCLO_WIDTH_CLK			15
+`define 	DE0_DCLO_WIDTH_CLK	 		15
 `define	DE0_ACLO_DELAY_CLK			7
 
  module  mini(
