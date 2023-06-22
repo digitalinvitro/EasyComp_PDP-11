@@ -8,7 +8,7 @@ http://zx-pk.ru/threads/23978-tsifrovaya-arkheologiya-1801-i-vse-vse-vse.html
 | Команда  | Описание |
 | ------------- | ------------- |
 | \<addr> go | запуск кода с адреса addr |  
-| \<addr> len dump | дамп памяти с адреса addr длинной len  |
+| \<addr> \<len> dump | дамп памяти с адреса addr длинной len  |
 | \<addr> @ | считать слово (16-бит) из памяти по адресу addr  |
 | \<value> \<addr> ! | записать слово value (16-бит) по адресу (16-бит) addr в память  
 | \<addr> С@ | считать байт (8-бит) из памяти по адресу addr  
