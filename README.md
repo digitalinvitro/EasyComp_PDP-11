@@ -5,6 +5,8 @@ FPGA реализация простейшего PDP-11 компьютера
 * Основан на реверс-инжиниринг коде 1801ВМ1 процессора: 
 http://zx-pk.ru/threads/23978-tsifrovaya-arkheologiya-1801-i-vse-vse-vse.html  
 ## В качестве монитора системы исопльзуется Форт:  
+| First Header  | Second Header |
+| ------------- | ------------- |
 | --- | --- |
 | \<addr> go | запуск кода с адреса addr |  
 | \<addr> len dump | дамп памяти с адреса addr длинной len  |
@@ -16,9 +18,3 @@ http://zx-pk.ru/threads/23978-tsifrovaya-arkheologiya-1801-i-vse-vse-vse.html
   | \- | вычитание top и subtop  
   | .hex | вывести вершину стека top в шестнадцатеричном виде  
   | value | внести в стек значение (16-бит) в шестнадцатеричном виде
-
-
-| First Header  | Second Header |
-| ------------- | ------------- |
-| Content Cell  | Content Cell  |
-| Content Cell  | Content Cell  |
