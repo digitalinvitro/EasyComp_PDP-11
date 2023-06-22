@@ -3,8 +3,8 @@ FPGA реализация простейшего PDP-11 компьютера
 * Проект для ISE WebPACK FPGA design solution
 * HDL - Verilog
 * Основан на реверс-инжиниринг коде 1801ВМ1 процессора: 
-http://zx-pk.ru/threads/23978-tsifrovaya-arkheologiya-1801-i-vse-vse-vse.html
-* В качестве монитора системы исопльзуется Форт:
+http://zx-pk.ru/threads/23978-tsifrovaya-arkheologiya-1801-i-vse-vse-vse.html  
+  В качестве монитора системы исопльзуется Форт:
 * addr go            - запуск кода с адреса addr
 * addr len dump      - дамп памяти с адреса addr длинной len
 * addr @             - считать слово (16-бит) из памяти по адресу addr
